@@ -3,6 +3,7 @@ from app.domain.file import MediaFile
 
 RUTA_BASE = "/storage/emulated/0/Android/media/com.whatsapp/WhatsApp/Media/WhatsApp Images"
 
+
 class DeviceStorage:
 
     def __init__(self):
@@ -10,13 +11,11 @@ class DeviceStorage:
 
     def list_files(self):
 
-        ruta = RUTA_BASE.replace(" ", "\\ ")
+        command = f'ls "{RUTA_BASE}"'
 
-        output = self.adb.run(["ls", ruta])
+        output = self.adb.run(command)
 
         files = output.split("\n")
-
-        print("ADB output:", output)
 
         return [
             MediaFile(name=f.strip(), size=0, path=RUTA_BASE)
@@ -25,6 +24,6 @@ class DeviceStorage:
 
     def delete_file(self, file):
 
-        ruta = RUTA_BASE.replace(" ", "\\ ")
+        command = f'rm "{RUTA_BASE}/{file.name}"'
 
-        self.adb.run(["rm", f"{ruta}/{file.name}"])
+        self.adb.run(command)
